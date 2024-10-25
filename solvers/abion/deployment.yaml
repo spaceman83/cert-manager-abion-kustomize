@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cert-manager-webhook-abion
+spec:
+  replicas:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cert-manager-webhook-abion
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: cert-manager-webhook-abion
+    spec:
+      serviceAccountName: cert-manager-webhook-abion
+      containers:
+        - name: cert-manager-webhook-abion
+          image: abiondevelopment/cert-manager-webhook-abion:1.2.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - --tls-cert-file=/tls/tls.crt
+            - --tls-private-key-file=/tls/tls.key
+            - --v=2
+            - --secure-port=6443
+          env:
+            - name: GROUP_NAME
+              value: "acme.webhook.abion.com"
+          ports:
+            - name: https
+              containerPort: 6443
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /healthz
+              port: https
+          readinessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /healthz
+              port: https
+          volumeMounts:
+            - name: certs
+              mountPath: /tls
+              readOnly: true
+          resources:
+            {}
+      volumes:
+        - name: certs
+          secret:
+            secretName: cert-manager-webhook-abion-webhook-tls
