@@ -7,3 +7,18 @@ resources:
 
 generatorOptions:
   disableNameSuffixHash: true
+
+# Neede if you have an internal authoritive zone with the same name as external one
+patches:
+  - patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --dns01-recursive-nameservers-only
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53
+    target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: cert-manager
