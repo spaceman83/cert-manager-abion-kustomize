@@ -22,3 +22,8 @@ patches:
       version: v1
       kind: Deployment
       name: cert-manager
+  - target:
+      kind: CustomResourceDefinition
+    patch: |- 
+      - op: remove
+        path: /metadata/labels/app.kubernetes.io~1instance
