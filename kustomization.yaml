@@ -8,7 +8,7 @@ resources:
 generatorOptions:
   disableNameSuffixHash: true
 
-# Neede if you have an internal authoritive zone with the same name as external one
+# Needed if you have an internal authoritive zone with the same name as external one. CRD Patch prunes the Instance label in case CICD pipelines complain about duplicate instances
 patches:
   - patch: |-
       - op: add
